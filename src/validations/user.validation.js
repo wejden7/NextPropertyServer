@@ -27,6 +27,34 @@ export const userLogin = [
       "Password is too weak. It should be at least 6 characters long."
     ),
 ];
+
+export const resetPassword = [
+  body("email")
+    .isEmail()
+    .withMessage("Invalid email format")
+    .custom(async (email, { req }) => {
+      const user = await FindByEmail(email);
+
+      if (user) {
+        req.user = user;
+
+        return true;
+      }
+      throw new Error("Email Not Found");
+    }),
+    body("token").notEmpty().withMessage("token is required"),
+
+  body("password")
+    .notEmpty()
+    .withMessage(
+      "The password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character."
+    )
+    .isLength({ min: 6 })
+    .withMessage(
+      "Password is too weak. It should be at least 6 characters long."
+    ),
+];
+
 export const userData = [
   body("name").notEmpty().withMessage("Name is required"),
   body("email")
@@ -81,7 +109,20 @@ export const userData = [
     }),
 ];
 
-export const  refreshToken =[
+export const refreshToken = [
   body("refreshToken").notEmpty().withMessage("refresh Token is required"),
+];
 
-]
+export const email = [
+  body("email")
+    .isEmail()
+    .withMessage("Invalid email format")
+    .custom(async (email, { req }) => {
+      const user = await FindByEmail(email);
+      if (user) {
+        req.user = user;
+        return true;
+      }
+      throw new Error("Email Not Found");
+    }),
+];

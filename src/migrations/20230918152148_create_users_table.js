@@ -7,6 +7,8 @@ export const up = function (knex) {
     table.string("password", 255).notNullable();
     table.string("telephone_number", 255);
     table.string("id_number", 255).unique().notNullable();
+    table.boolean('blocked').defaultTo(false)
+    table.boolean('verified').defaultTo(false);
     table.integer("role").unsigned().notNullable();
 
     table.foreign("role").references("id").inTable("roles");

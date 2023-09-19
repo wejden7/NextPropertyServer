@@ -1,5 +1,5 @@
 import { promisePool } from "../../database.js";
-import { encrypt, compareEncrypt, createToken  } from "../service/index.js";
+import { encrypt, compareEncrypt, createToken } from "../service/index.js";
 
 export const create = async (data) => {
   const { email, name, password, telephone_number, id_number, role } = data;
@@ -7,6 +7,15 @@ export const create = async (data) => {
 
   await promisePool.query(
     `INSERT INTO users (email, name, password ,telephone_number , id_number, role) VALUES ('${email}', '${name}', '${passwordEncryot}', '${telephone_number}', '${id_number}','${role}');`
+  );
+};
+
+export const updatePassWord = async (data) => {
+  const { email, password } = data;
+  const passwordEncryot = encrypt(password);
+
+  await promisePool.query(
+    `UPDATE users SET password  = '${passwordEncryot}' WHERE email = '${email}';`
   );
 };
 

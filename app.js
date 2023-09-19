@@ -4,7 +4,11 @@ import cors from "cors";
 import { pool } from "./database.js";
 import JwtStrategy from "./jwt_strategy.js";
 import passport from "passport";
-import auth from "./src/controllers/auth.controllers.js";
+
+export const authMiddleware = passport.authenticate("jwt", {
+  session: false,
+  failWithError: true,
+});
 
 import routerAuth from "./src/routes/auth.routes.js";
 
@@ -23,10 +27,11 @@ app.get("/", (req, res) =>
 
 app.use(routerAuth);
 
-app.use(auth);
+app.use(authMiddleware);
 app.get("/new", (req, res) => res.status(200).json("auth running"));
 
 
+//* Error Router
 app.use((error, req, res, next) =>
   res.status(404).json({
     status: "La connexion a échouée, merci de réessayer",
@@ -34,7 +39,7 @@ app.use((error, req, res, next) =>
   })
 );
 
-//* 404 Route
+//* Not Found Router
 app.use((req, res) => res.status(404).json({ status: "Page not found." }));
 
 // Listen for process termination signals

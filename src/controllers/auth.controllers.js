@@ -1,16 +1,8 @@
 import * as User from "../crud/user.crud.js";
-import {
-  compareEncrypt,
-  createToken,
-  createRefreshToken,
-  verifyRefreshToken,
-} from "../service/index.js";
-import passport from "passport";
-
-export default passport.authenticate("jwt", {
-  session: false,
-  failWithError: true,
-});
+import * as ResetToken from "../crud/reset_token.crud.js";
+import * as Service from "../service/index.js";
+import sendMail from "../service/sendMail.js";
+import fs from "fs";
 
 export const Register = async (req, res, next) => {
   try {
@@ -27,11 +19,11 @@ export const Login = async (req, res, next) => {
     const { password } = req.body;
     const user = req.user;
 
-    if (!compareEncrypt(password, user.password))
+    if (!Service.compareEncrypt(password, user.password))
       return res.status(404).json("Not Found p");
 
-    const token = createToken({ email: user.email, name: user.name });
-    const refreshToken = createRefreshToken(user.email);
+    const token = Service.createToken({ email: user.email, name: user.name });
+    const refreshToken = Service.createRefreshToken(user.email);
 
     return res.status(200).json({
       message: "Login Success",
@@ -44,25 +36,58 @@ export const Login = async (req, res, next) => {
   }
 };
 
-export const RefreshToken = async (req, res,next) => {
+export const RefreshToken = async (req, res, next) => {
   const refreshToken = req.body.refreshToken;
-
-  if (!refreshToken) {
-    return res.status(400).json({ message: "Refresh token is required" });
-  }
-
   try {
-    const decoded = verifyRefreshToken(refreshToken);
+    const decoded = Service.verifyRefreshToken(refreshToken);
 
     const user = User.FindByEmail(decoded.email);
     if (!user) {
-      next({ message: "Invalid refresh token" });
+      next({ message: "Invalid refresh token 2", error });
     }
 
-    const accessToken = createToken({ email: user.email, name: user.name });
+    const accessToken = Service.createToken({
+      email: user.email,
+      name: user.name,
+    });
 
     res.status(200).json({ accessToken });
   } catch (error) {
-    next({ message: "Invalid refresh token" });
+    next({ message: "Invalid refresh token ", error });
+  }
+};
+
+export const ForgotPassword = async (req, res, next) => {
+  const user = req.user;
+
+  const resetToken = Math.random().toString(36).substring(2, 15);
+
+  try {
+    await ResetToken.create({ email: user.email, token: resetToken });
+    const template = fs.readFileSync(
+      "template/email_template_reset_your_password.html",
+      "utf8"
+    );
+  
+    const emailContent = template
+      .replace("{{code}}", resetToken)
+      .replace("{{name}}", user.name);
+    await sendMail(user.email,emailContent);
+    return res.status(200).json({ message: "ResetToken send successfully" });
+  } catch (error) {
+    next({ message: "Invalid Forgot Password ", error });
+  }
+};
+
+export const ResetPassword = async (req, res, next) => {
+  const { token, password } = req.body;
+  const user = req.user;
+  try {
+    const resetToken = await ResetToken.verifyResetToken(user.email, token);
+    if (!resetToken) return next({ message: "Invalid reset Token", error: {} });
+    await User.updatePassWord({ email: user.email, password });
+    return res.status(200).json({ message: "Reset Password  successfully" });
+  } catch (error) {
+    next({ message: "Invalid Reset Password", error });
   }
 };
