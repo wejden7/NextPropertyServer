@@ -4,13 +4,10 @@ import cors from "cors";
 import { pool } from "./database.js";
 import JwtStrategy from "./jwt_strategy.js";
 import passport from "passport";
-
-export const authMiddleware = passport.authenticate("jwt", {
-  session: false,
-  failWithError: true,
-});
+import { JwtMiddleware } from "./src/middleware/auth.middleware.js";
 
 import routerAuth from "./src/routes/auth.routes.js";
+import routerUser from "./src/routes/user.routes.js";
 
 dotenv.config();
 const app = express();
@@ -27,9 +24,9 @@ app.get("/", (req, res) =>
 
 app.use(routerAuth);
 
-app.use(authMiddleware);
+app.use(JwtMiddleware);
+app.use(routerUser);
 app.get("/new", (req, res) => res.status(200).json("auth running"));
-
 
 //* Error Router
 app.use((error, req, res, next) =>

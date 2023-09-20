@@ -29,20 +29,7 @@ export const userLogin = [
 ];
 
 export const resetPassword = [
-  body("email")
-    .isEmail()
-    .withMessage("Invalid email format")
-    .custom(async (email, { req }) => {
-      const user = await FindByEmail(email);
-
-      if (user) {
-        req.user = user;
-
-        return true;
-      }
-      throw new Error("Email Not Found");
-    }),
-    body("token").notEmpty().withMessage("token is required"),
+  body("token").notEmpty().withMessage("token is required"),
 
   body("password")
     .notEmpty()
@@ -109,8 +96,8 @@ export const userData = [
     }),
 ];
 
-export const refreshToken = [
-  body("refreshToken").notEmpty().withMessage("refresh Token is required"),
+export const token = [
+  body("token").notEmpty().withMessage("Token is required"),
 ];
 
 export const email = [
