@@ -4,7 +4,7 @@ export const up = function (knex) {
     table.string("email", 255).unique().notNullable();
     table.string("name", 255);
     table.string("password", 255).notNullable();
-    table.string("telephone_number", 255);
+    table.string("telephone_number", 255).unique()
     table.string("id_number", 255).unique().notNullable();
     table.boolean("blocked").defaultTo(false);
     table.boolean("verified").defaultTo(false);

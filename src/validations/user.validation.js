@@ -113,3 +113,45 @@ export const email = [
       throw new Error("Email Not Found");
     }),
 ];
+
+export const newPassword =[
+ 
+  body("oldpassword")
+    .notEmpty()
+    .withMessage(
+      "The password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character."
+    )
+    .isLength({ min: 6 })
+    .withMessage(
+      "Password is too weak. It should be at least 6 characters long."
+    ),
+    body("newpassword")
+    .notEmpty()
+    .withMessage(
+      "The password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character."
+    )
+    .isLength({ min: 6 })
+    .withMessage(
+      "Password is too weak. It should be at least 6 characters long."
+    ),
+];
+
+export const userUpdate = [
+  body("name").notEmpty().withMessage("Name is required"),
+  body("email")
+    .isEmail()
+    .withMessage("Invalid email format"),
+
+  body("telephone_number").custom((value) => {
+    if (value === "" || !isNaN(value)) {
+      return true;
+    }
+    throw new Error("telephone number must be a number");
+  }),
+
+  body("id_number")
+    .notEmpty()
+    .withMessage("Id Number is required")
+
+ 
+];

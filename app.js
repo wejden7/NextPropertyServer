@@ -6,8 +6,8 @@ import JwtStrategy from "./jwt_strategy.js";
 import passport from "passport";
 import { JwtMiddleware } from "./src/middleware/auth.middleware.js";
 
-import routerAuth from "./src/routes/auth.routes.js";
-import routerUser from "./src/routes/user.routes.js";
+import routerAuth, { JwtRouterAuth } from "./src/routes/auth.routes.js";
+import routerUser, { JwtRouterUser } from "./src/routes/user.routes.js";
 
 dotenv.config();
 const app = express();
@@ -23,10 +23,13 @@ app.get("/", (req, res) =>
 );
 
 app.use(routerAuth);
+app.use(routerUser);
 
 app.use(JwtMiddleware);
-app.use(routerUser);
-app.get("/new", (req, res) => res.status(200).json("auth running"));
+
+app.use(JwtRouterAuth);
+app.use(JwtRouterUser);
+
 
 //* Error Router
 app.use((error, req, res, next) =>

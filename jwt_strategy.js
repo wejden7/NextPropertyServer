@@ -12,7 +12,7 @@ var opts = {
 
 export default new JwtStrategy(opts, async function (jwt_payload, done) {
   try {
-    console.log(jwt_payload)
+    console.log(`${jwt_payload.email} is Auth `)
     if (jwt_payload) {
        
       return done(null, jwt_payload);
