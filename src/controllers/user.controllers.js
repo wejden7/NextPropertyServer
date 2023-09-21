@@ -43,6 +43,19 @@ export const FindAllAgent = async (req, res, next) => {
   }
 };
 
+export const FindProfile = async (req, res, next) => {
+  try {
+    const user = req.user;
+
+    const profile = await User.FindByEmail(user.email);
+
+    res.status(200).json({ profile: profile });
+  } catch (error) {
+    console.log(error)
+    next({ message: "Find Profile Invalide", error: error });
+  }
+};
+
 export const UpdateProfile = async (req, res, next) => {
   try {
     const user = req.user;
@@ -59,10 +72,16 @@ export const UpdateProfile = async (req, res, next) => {
     if (telephoneExiste) return next({ message: "Telephone Number Existe " });
 
     await User.update(user.email, data);
+    const token = Service.createToken({ email: data.email, name: data.name });
+    const refreshToken = Service.createRefreshToken(data.email);
 
-    res.status(200).json("Update Profile");
+    return res.status(200).json({
+      message: "Update Profile",
+      token,
+      refreshToken,
+    });
   } catch (error) {
-    next(error);
+    next({ message: "Update Profile Invalide", error: error });
   }
 };
 

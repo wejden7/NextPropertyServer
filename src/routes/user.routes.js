@@ -5,6 +5,7 @@ import {
   ToggleBlockedUser,
   UpdateProfile,
   UpdatePassWord,
+  FindProfile,
 } from "../controllers/user.controllers.js";
 import { Authorization } from "../middleware/authorization.js";
 import { Validation } from "../controllers/validation.controllers.js";
@@ -23,6 +24,7 @@ JwtRouterUser.put(
 );
 
 JwtRouterUser.put("/profile", userUpdate, Validation, UpdateProfile);
+JwtRouterUser.get("/profile", FindProfile);
 JwtRouterUser.put("/update-password", newPassword, Validation, UpdatePassWord);
 
 export default router;

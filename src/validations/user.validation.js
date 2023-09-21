@@ -8,7 +8,6 @@ export const userLogin = [
     .withMessage("Invalid email format")
     .custom(async (email, { req }) => {
       const user = await FindByEmail(email);
-
       if (user) {
         req.user = user;
 
@@ -106,6 +105,7 @@ export const email = [
     .withMessage("Invalid email format")
     .custom(async (email, { req }) => {
       const user = await FindByEmail(email);
+      
       if (user) {
         req.user = user;
         return true;
