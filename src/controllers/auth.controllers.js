@@ -40,11 +40,10 @@ export const RefreshToken = async (req, res, next) => {
   try {
     const decoded = Service.verifyRefreshToken(refreshToken);
 
-    const user = User.FindByEmail(decoded.email);
+    const user = await User.FindByEmail(decoded.email);
     if (!user) {
       next({ message: "Invalid refresh token 2", error });
     }
-
     const accessToken = Service.createToken({
       email: user.email,
       name: user.name,
@@ -62,7 +61,6 @@ export const ForgotPassword = async (req, res, next) => {
 
     const resetToken = Service.createResetPasswordToken(user.email);
 
-  
     const template = fs.readFileSync(
       "template/email_template_reset_your_password.html",
       "utf8"
@@ -122,4 +120,12 @@ export const EmailVerify = async (req, res, next) => {
   } catch (error) {
     next({ message: "Invalid Verify Email", error: error });
   }
+};
+
+export const IsAdmin = async (req, res, next) => {
+  res.status(200).json("Admin");
+};
+
+export const CheckToken = async (req, res, next) => {
+  res.status(200).json("Valide");
 };

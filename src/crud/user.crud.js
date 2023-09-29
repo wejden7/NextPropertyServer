@@ -84,6 +84,7 @@ export const IdNumberExiste = async (email,id)=>{
   if (row.length>0) return row;
   return undefined;
 }
+
 export const TelephoneExiste = async (email,tel)=>{
   const [row] = await promisePool.query(
     `select * from users where email !='${email}' and telephone_number ='${tel}'`

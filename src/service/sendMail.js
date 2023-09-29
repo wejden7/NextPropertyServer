@@ -3,14 +3,14 @@ import nodemailer from "nodemailer";
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.MAILE_USER,
-    pass: process.env.MAILE_PASS,
+    user: `${process.env.MAILE_USER}`,
+    pass: `${process.env.MAILE_PASS}`,
   },
 });
 
 export default async (email, html) => {
   const options = {
-    from: `TecPro <restaurant.dev.723@gmail.com>`,
+    from: `NextProperty <${process.env.MAILE_USER}>`,
     to: email,
     subject: "Reset your password",
     html: html,
