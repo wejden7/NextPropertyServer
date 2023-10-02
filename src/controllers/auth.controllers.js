@@ -21,11 +21,14 @@ export const Login = async (req, res, next) => {
     if (!Service.compareEncrypt(password, user.password))
       return res.status(404).json("Not Found p");
 
+    const userProfile = await User.FindByEmailProfile(user.email);
+
     const token = Service.createToken({ email: user.email, name: user.name });
     const refreshToken = Service.createRefreshToken(user.email);
 
     return res.status(200).json({
       message: "Login Success",
+      user: userProfile,
       token,
       refreshToken,
     });

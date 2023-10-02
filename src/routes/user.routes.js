@@ -9,7 +9,7 @@ import {
 } from "../controllers/user.controllers.js";
 import { Authorization } from "../middleware/authorization.js";
 import { Validation } from "../controllers/validation.controllers.js";
-import { newPassword, userUpdate } from "../validations/user.validation.js";
+import { newPassword, profileUpdate } from "../validations/user.validation.js";
 
 const router = express.Router();
 export const JwtRouterUser = express.Router();
@@ -23,7 +23,7 @@ JwtRouterUser.put(
   ToggleBlockedUser
 );
 
-JwtRouterUser.put("/profile", userUpdate, Validation, UpdateProfile);
+JwtRouterUser.put("/profile", profileUpdate, Validation, UpdateProfile);
 JwtRouterUser.get("/profile", FindProfile);
 JwtRouterUser.put("/update-password", newPassword, Validation, UpdatePassWord);
 

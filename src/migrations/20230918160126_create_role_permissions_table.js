@@ -2,11 +2,21 @@ export const up = function (knex) {
   return knex.schema.createTable("role_permissions ", function (table) {
     table.primary(["role", "permission"]);
 
-    table.integer("role").unsigned().notNullable();
-    table.integer("permission").unsigned().notNullable();
+    table.integer("role").unsigned();
+    table.integer("permission").unsigned();
 
-    table.foreign("role").references("id").inTable("roles");
-    table.foreign("permission").references("id").inTable("permissions");
+    table
+      .foreign("role")
+      .references("id")
+      .inTable("roles")
+      .onDelete("CASCADE")
+      .onUpdate("CASCADE");
+    table
+      .foreign("permission")
+      .references("id")
+      .inTable("permissions")
+      .onDelete("CASCADE")
+      .onUpdate("CASCADE");
   });
 };
 

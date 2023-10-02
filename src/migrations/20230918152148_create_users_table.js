@@ -8,7 +8,7 @@ export const up = function (knex) {
     table.string("id_number", 255).unique().notNullable();
     table.boolean("blocked").defaultTo(false);
     table.boolean("verified").defaultTo(false);
-    table.integer("role").unsigned().notNullable();
+    table.integer("role").unsigned();
 
     table
       .foreign("role")

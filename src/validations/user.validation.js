@@ -136,11 +136,8 @@ export const newPassword =[
     ),
 ];
 
-export const userUpdate = [
+export const profileUpdate = [
   body("name").notEmpty().withMessage("Name is required"),
-  body("email")
-    .isEmail()
-    .withMessage("Invalid email format"),
 
   body("telephone_number").custom((value) => {
     if (value === "" || !isNaN(value)) {

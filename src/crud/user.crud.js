@@ -47,6 +47,22 @@ export const FindByEmail = async (email) => {
   return undefined;
 };
 
+export const FindByEmailProfile = async (email) => {
+  const [[row]] = await promisePool.query(
+    `SELECT email,users.name as name,roles.name as role,telephone_number,id_number,verified FROM users join roles on users.role = roles.id WHERE email='${email}'`
+  );
+  if (row) return row;
+  return undefined;
+};
+export const updateProfile = async (myEmail, data) => {
+  const { name, telephone_number, id_number } = data;
+
+  await promisePool.query(
+    `UPDATE users SET name='${name}',telephone_number='${telephone_number}',id_number='${id_number}' WHERE email = '${myEmail}';`
+  );
+  
+};
+
 export const FindByIdNumber = async (id_number) => {
   const [[row]] = await promisePool.query(
     `SELECT * FROM users WHERE id_number='${id_number}'`
@@ -77,19 +93,18 @@ export const ToggleBlocked = async (id) => {
   );
 };
 
-export const IdNumberExiste = async (email,id)=>{
+export const IdNumberExiste = async (email, id) => {
   const [row] = await promisePool.query(
     `select * from users where email !='${email}' and id_number ='${id}'`
   );
-  if (row.length>0) return row;
+  if (row.length > 0) return row;
   return undefined;
-}
+};
 
-export const TelephoneExiste = async (email,tel)=>{
+export const TelephoneExiste = async (email, tel) => {
   const [row] = await promisePool.query(
     `select * from users where email !='${email}' and telephone_number ='${tel}'`
   );
-  if (row.length>0) return row;
+  if (row.length > 0) return row;
   return undefined;
-}
-
+};
